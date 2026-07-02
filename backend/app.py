@@ -7,20 +7,18 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
-# CẤU HÌNH KẾT NỐI POSTGRESQL CỦA BẠN
+
 DB_CONFIG = {
     "host": "localhost",
-    "database": "habit-tracker",       # Tên Database của bạn
-    "user": "postgres",           # Username mặc định
-    "password": "24092005",  # Mật khẩu Postgres của bạn 👈 SỬA Ở ĐÂY
+    "database": "habit-tracker",      
+    "user": "postgres",          
+    "password": "24092005",  
     "port": "5432"
 }
 
 def get_db_connection():
-    # RealDictCursor giúp trả về kết quả dạng Dictionary giống SQLite Row
     return psycopg2.connect(**DB_CONFIG, cursor_factory=RealDictCursor)
 
-# API 1: Lấy danh sách thói quen
 @app.route('/api/habits', methods=['GET'])
 def get_habits():
     try:
@@ -45,7 +43,6 @@ def get_habits():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# API 2: Thêm thói quen mới
 @app.route('/api/habits', methods=['POST'])
 def add_habit():
     try:
@@ -70,7 +67,6 @@ def add_habit():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# API 3: Check / Uncheck thói quen (Cập nhật lưới HabitKit)
 @app.route('/api/habits/<int:habit_id>/toggle', methods=['POST'])
 def toggle_habit(habit_id):
     try:
@@ -98,7 +94,6 @@ def toggle_habit(habit_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# API 4: Xóa thói quen hoàn toàn
 @app.route('/api/habits/<int:habit_id>', methods=['DELETE'])
 def delete_habit(habit_id):
     try:
