@@ -12,7 +12,7 @@ async function fetchHabits() {
         habits.forEach(habit => {
             const tr = document.createElement('tr');
             
-            // Cột Done? trạng thái hiện tại
+            // 1. Cột Done? trạng thái hiện tại (Giữ nguyên logic của bạn)
             const doneSection = habit.completed_today 
                 ? `<div class="checkbox-container" onclick="toggleHabit(${habit.id})">
                     <input type="checkbox" checked> <span class="done-label">✓ Today</span>
@@ -21,12 +21,16 @@ async function fetchHabits() {
                     <input type="checkbox">
                    </div>`;
 
-            // Vẽ lưới HabitKit mini (Mặc định 60 ô vuông)
+            // 2. KHẮC PHỤC NÚT DONE: Nếu đã hoàn thành hôm nay, làm mờ nút và không cho bấm nữa
+            const buttonHtml = habit.completed_today
+                ? `<button class="btn-done" style="background-color: #eaeaea; color: #a0a0a0; cursor: not-allowed;" disabled>Finished</button>`
+                : `<button class="btn-done" onclick="toggleHabit(${habit.id})">Done</button>`;
+
+            // Vẽ lưới HabitKit mini (Mặc định 60 ô vuông - Giữ nguyên logic của bạn)
             let gridHtml = '<div class="habitkit-mini-grid">';
             const totalDots = 60; 
             for (let i = 0; i < totalDots; i++) {
                 let isDotActive = false;
-                // Nếu có streak, tô xám đậm các ô cuối từ phải qua trái. Nếu streak = 0, trống hết.
                 if (habit.streak > 0 && i >= (totalDots - habit.streak)) {
                     isDotActive = true;
                 }
@@ -34,7 +38,7 @@ async function fetchHabits() {
             }
             gridHtml += '</div>';
 
-            // Đổ toàn bộ dữ liệu vào dòng
+            // Đổ dữ liệu vào dòng (Thay nút Done cũ bằng biến buttonHtml mới)
             tr.innerHTML = `
                 <td style="font-weight: 500;">${habit.name}</td>
                 <td>
@@ -42,7 +46,7 @@ async function fetchHabits() {
                     <span class="date-text">📅 Tạo: ${habit.created_at}</span>
                 </td>
                 <td>${doneSection}</td>
-                <td><button class="btn-done" onclick="toggleHabit(${habit.id})">Done</button></td>
+                <td>${buttonHtml}</td> 
                 <td>${gridHtml}</td>
                 <td class="streak-text">🔥 ${habit.streak} ngày</td>
                 <td><button class="btn-delete" onclick="deleteHabit(${habit.id})">🗑️</button></td>
